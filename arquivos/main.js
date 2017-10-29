@@ -14,7 +14,13 @@ class FormErrors {
     }
 
     clear(field){
-        delete this.errors[field]
+        if ( field ) {
+            
+            delete this.errors[field]
+
+        }else{
+            this.errors = {};
+        }
     }
 
     has(field) {
@@ -28,12 +34,12 @@ class FormErrors {
 Vue.component('binomial-calculator', {
     template: `
         <section class="section">
-            <h1 class="title">Binomial Calculator</h1>
+            <h1 class="title">Binomial Distribution Calculator</h1>
             <p class="subtitle">
                 A tool to calcule <strong>Binomial Probabilities</strong>!
             </p>
             <div class="columns is-desktop">
-                <div class="column" @keydown="errors.clear( $event.target.name )">
+                <div class="column" >
                     <div class="field">
                         <label class="label">Probability of success in a single event</label>
                         <div class="control">
@@ -79,12 +85,12 @@ Vue.component('binomial-calculator', {
                                         <td>{{this.binomialProbabilities.less | round }}</td>
                                 </tr>
                                 <tr>
-                                        <td>P(X = {{this.numberOfSuccess | round }})</td>
-                                        <td>{{this.binomialProbabilities.equal | round }}</td>
-                                </tr>
-                                <tr>
                                         <td>P(X <=  {{this.numberOfSuccess | round }})</td>
                                         <td>{{this.binomialProbabilities.lessOrEqual | round }}</td>
+                                </tr>
+                                <tr>
+                                        <td>P(X = {{this.numberOfSuccess | round }})</td>
+                                        <td>{{this.binomialProbabilities.equal | round }}</td>
                                 </tr>
                                 <tr>
                                         <td>P(X >  {{this.numberOfSuccess | round }})</td>
@@ -98,14 +104,19 @@ Vue.component('binomial-calculator', {
                         </table>
                     </div>
                 </div>
-            </div>
+                </div>
+                <chart-vue :labels="chartData.labels" :values="chartData.values" title="Probability Mass Function" type="bar"></chart-vue>
         </section>
     `,
     data(){
         return{
-            eventProbability: 0.5,
-            numberOfTrials: 5,
-            numberOfSuccess: 3,
+            chartData: {
+                labels: [],
+                values: []
+            },
+            eventProbability: 0.3,
+            numberOfTrials: 20,
+            numberOfSuccess: 12,
             binomialProbabilities: {
                 'equal' : 0,
                 'greater': 0,
@@ -142,7 +153,7 @@ Vue.component('binomial-calculator', {
         calculate(){
             this.verifyErrors();
 
-            let radian = (number => {
+            let factorial = (number => {
                 let radian = 1;
                 while(number > 1){
                     radian = radian*number--;
@@ -150,6 +161,8 @@ Vue.component('binomial-calculator', {
                 return radian;
             });
 
+            this.chartData.values = [];
+            this.chartData.labels = [];
             this.binomialProbabilities = {
                 'equal': 0,
                 'greater': 0,
@@ -160,7 +173,7 @@ Vue.component('binomial-calculator', {
 
             for (let numberOfSuccess = 0; numberOfSuccess <= this.numberOfTrials; numberOfSuccess++) {
 
-                let binomialCoefficient = radian(this.numberOfTrials) / (radian(numberOfSuccess) * radian(this.numberOfTrials - numberOfSuccess));
+                let binomialCoefficient = factorial(this.numberOfTrials) / (factorial(numberOfSuccess) * factorial(this.numberOfTrials - numberOfSuccess));
                 let prob = binomialCoefficient * Math.pow(this.eventProbability, numberOfSuccess) *
                                     Math.pow(1 - this.eventProbability, this.numberOfTrials - numberOfSuccess)
 
@@ -175,6 +188,9 @@ Vue.component('binomial-calculator', {
                 if (numberOfSuccess > this.numberOfSuccess) {
                     this.binomialProbabilities.greater += prob;
                 }
+
+                this.chartData.labels.push(numberOfSuccess);
+                this.chartData.values.push(prob);
             }
             
             this.binomialProbabilities.greaterOrEqual = this.binomialProbabilities.equal + this.binomialProbabilities.greater;
@@ -182,6 +198,7 @@ Vue.component('binomial-calculator', {
         },
         verifyErrors(){
             let fields = ['eventProbability' , 'numberOfTrials', 'numberOfSuccess'];
+            this.errors.clear();
 
             fields.forEach(function(field) {   
                 if ( this[field] < 0 ) {
@@ -195,10 +212,14 @@ Vue.component('binomial-calculator', {
 
             if ( this.eventProbability > 1){
                 this.errors.set('eventProbability', 'The probability must be a number between 0 and 1');
+            }else{
+                this.errors.clear('eventProbability');
             }
 
-            if (this.numberOfSuccess > this.numberOfTrials) {
+            if (parseFloat(this.numberOfSuccess) > parseFloat(this.numberOfTrials)) {
                 this.errors.set('numberOfSuccess', 'The number of success can not be greater than the number of trials');
+            }else{
+                this.errors.clear('numberOfSuccess')
             }
         },
         reset(){
@@ -212,11 +233,81 @@ Vue.component('binomial-calculator', {
                 'lessOrEqual': 0,
                 'greaterOrEqual': 0
             };
-            this.calculate();
+            this.errors.calculate();
         }
     }
 });
 
+Vue.component('chart-vue', {
+    template: '<canvas id="test"></canvas>',
+    props: ['labels', 'values', 'color', 'type', 'title'],
+    props: {
+        labels: {},
+        values: {},
+        color: {
+            default: 'rgba(220, 220, 220, .2)'
+        },
+        type: {
+            default: 'line'
+        },
+        title: {}
+    },
+    data(){
+        return {
+            chart: 0
+        }
+    },
+    watch: {
+        values: function () { 
+            if (this.chart){
+                this.chart.destroy();
+            }
+            this.render();
+        }
+    },
+    methods: {
+        render(){
+            var data = {
+                labels: this.labels,
+                datasets: [{
+                    label: this.title,
+                    data: this.values,
+                    backgroundColor: 'rgba(54, 162, 235, .2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            }
+
+            var options = {
+                title: {
+                    display: true,
+                    text: this.title,
+                    fontSize: 20
+                },
+                legend: {
+                    display: false
+                },
+                label: {
+                    enabled: false
+                },
+                tooltips: {
+                    displayColors: false,
+                    callbacks: {
+                        label:  (tooltipItem, data) => {
+                            return  tooltipItem.yLabel;
+                        },
+                        title: (tooltipItem, data) => {
+                            return `Probability of getting ${tooltipItem[0].xLabel}`;
+                        }
+                    }
+                },
+            }
+
+            this.chart = new Chart(this.$el.getContext('2d'), { type: this.type, data: data, options });
+        }
+    }
+
+})
 new Vue({
 	el: '#app'
 })
