@@ -29,13 +29,10 @@ class FormErrors {
         return Object.keys(this.errors).length > 0
     }
 }
+
 Vue.component('binomial-calculator', {
     template: `
         <section class="section">
-            <h1 class="title">Binomial Distribution Calculator</h1>
-            <p class="subtitle">
-                A tool to calcule <strong>Binomial Probabilities</strong>!
-            </p>
             <div class="columns is-desktop">
                 <div class="column" >
                     <div class="field">
@@ -307,6 +304,7 @@ Vue.component('chart-vue', {
     }
 
 })
+
 new Vue({
 	el: '#app'
 })
