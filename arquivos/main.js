@@ -15,9 +15,7 @@ class FormErrors {
 
     clear(field){
         if ( field ) {
-            
             delete this.errors[field]
-
         }else{
             this.errors = {};
         }
@@ -28,7 +26,7 @@ class FormErrors {
     }
 
     any(){
-          return Object.keys(this.errors).length > 0
+        return Object.keys(this.errors).length > 0
     }
 }
 Vue.component('binomial-calculator', {
@@ -105,6 +103,7 @@ Vue.component('binomial-calculator', {
                     </div>
                 </div>
                 </div>
+                
                 <chart-vue :labels="chartData.labels" :values="chartData.values" title="Probability Mass Function" type="bar"></chart-vue>
         </section>
     `,
@@ -115,8 +114,8 @@ Vue.component('binomial-calculator', {
                 values: []
             },
             eventProbability: 0.3,
-            numberOfTrials: 20,
-            numberOfSuccess: 12,
+            numberOfTrials: 100,
+            numberOfSuccess: 35,
             binomialProbabilities: {
                 'equal' : 0,
                 'greater': 0,
@@ -223,9 +222,9 @@ Vue.component('binomial-calculator', {
             }
         },
         reset(){
-            this.eventProbability = 0.5;
-            this.numberOfTrials = 5;
-            this.numberOfSuccess = 3;
+            this.eventProbability = .3;
+            this.numberOfTrials = 100;
+            this.numberOfSuccess = 35;
             this.binomialProbabilities = {
                 'equal': 0,
                 'greater': 0,
@@ -239,18 +238,18 @@ Vue.component('binomial-calculator', {
 });
 
 Vue.component('chart-vue', {
-    template: '<canvas id="test"></canvas>',
+    template: '<canvas></canvas>',
     props: ['labels', 'values', 'color', 'type', 'title'],
     props: {
         labels: {},
         values: {},
+        title: {},
         color: {
             default: 'rgba(220, 220, 220, .2)'
         },
         type: {
             default: 'line'
-        },
-        title: {}
+        }
     },
     data(){
         return {
