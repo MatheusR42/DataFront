@@ -15,6 +15,37 @@
 </head>
 <body>
 	<div id="app">
+		<nav class="navbar is-primary is-bold">
+			<div class="navbar-brand">
+				<a class="navbar-item">
+					DataFront
+				</a>
+				<span class="navbar-burger burger" data-target="navbarMenuHeroA">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</div>
+			<div id="navbarMenuHeroA" class="navbar-menu">
+				<div class="navbar-end">
+					<a class="navbar-item" href="/">
+						Home
+					</a>
+					<a class="navbar-item" href="/Binomial-Distribution-Calculator">
+						Binomial Calculator
+					</a>
+					<span class="navbar-item">
+						<a class="button is-primary is-inverted" href="https://github.com/MatheusR42/DataFront" target="_blank">
+							<span class="icon">
+								<i class="fa fa-github"></i>
+							</span>
+							<span>Source</span>
+						</a>
+					</span>
+				</div>
+			</div>
+		</nav>
+		
 		<section class="section">
 			<h1 class="title">Binomial Distribution Calculator</h1>
 			<p class="subtitle">
@@ -24,9 +55,12 @@
 		</section>
 		<binomial-calculator></binomial-calculator>	
 	</div>
+
+	<link rel="stylesheet" href="../dist/datafront_app.min.css">
 	<script src="https://unpkg.com/vue@2.5.2/dist/vue.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
 	<script src="../dist/datafront_components.min.js"></script>
 	<script src="../dist/datafront_app.min.js"></script>
+	<script src="https://use.fontawesome.com/a9473efc73.js"></script>
 </body>
 </html>
