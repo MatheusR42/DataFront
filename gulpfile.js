@@ -12,12 +12,8 @@ var gulprename = require('gulp-rename');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglifyjs');
 var plumber = require('gulp-plumber');
-var eslint = require('gulp-eslint');
 var spritesmith = require('gulp.spritesmith-multi')
 var babel = require('gulp-babel');
-var csslint = require('gulp-csslint');
-var sassLint = require('gulp-sass-lint');
-var htmlLint = require('gulp-html-lint');
 var merge = require('merge-stream');
 
 // Variables
@@ -232,46 +228,6 @@ var taskImportModulesToCSS = function () {
 
 };
 
-var taskImportModulesToCSSLint = function () {
-
-    var task = gulp.src([config.paths.css + '*.css', "!" + config.paths.css + 'sass.min.css']);
-
-    csslint.addFormatter('csslint-stylish');
-
-    task = task.pipe(csslint('csslintrc.json'));
-    task = task.pipe(csslint.formatter('stylish'));
-
-    return task;
-
-};
-
-var taskImportModulesToWatchCSSLint = function () {
-
-    gulp.watch([config.paths.css + '*.css', "!" + config.paths.css + 'sass.min.css'], ['csslint']);
-    return null;
-
-};
-
-var taskImportModulesToSCSSLint = function () {
-
-    var task = gulp.src([config.paths.sass + '*.scss']);
-
-    csslint.addFormatter('csslint-stylish');
-
-    task = task.pipe(sassLint());
-    task = task.pipe(sassLint.format());
-
-    return task;
-
-};
-
-var taskImportModulesToWatchSCSSLint = function () {
-
-    gulp.watch([config.paths.sass + '*.scss'], ['scsslint']);
-    return null;
-
-};
-
 var taskImportModulesToCSSVendor = function () {
 
     var files = [config.paths.vendor + '*.css'];
@@ -362,49 +318,6 @@ var taskImportModulesToScriptsVendor = function () {
 
 };
 
-var taskImportModulesToESLint = function () {
-
-    /*
-    2 = Errors
-    1 = Warning
-    0 = off
-    */
-
-    var task = gulp.src([config.paths.js + '*.js', config.paths.components + '*.js']);
-    task = task.pipe(eslint());
-    task = task.pipe(eslint.result(function (result) {
-        // Called for each ESLint result.
-        // http://eslint.org/docs/rules/
-        console.log('ESLint result: ' + result.filePath);
-        console.log('# Messages: ' + result.messages.length);
-        console.log('# Warnings: ' + result.warningCount);
-        console.log('# Errors: ' + result.errorCount);
-
-        if (result.errorCount > 0) {
-            console.error("------------------------------------------------------------------------------");
-            console.error("                          X HÁ UM ERRO NO JS!!!                               ");
-            console.error("------------------------------------------------------------------------------");
-        }
-
-    }));
-
-    // eslint.format() outputs the lint results to the console.
-    // Alternatively use eslint.formatEach() (see Docs).
-    task = task.pipe(eslint.format())
-    // To have the process exit with an error code (1) on
-    // lint error, return the stream and pipe to failAfterError last.
-    task = task.pipe(eslint.failAfterError());
-    return task;
-
-};
-
-var taskImportModulesToWatchEslint = function () {
-
-    gulp.watch([config.paths.js + '*.js', config.paths.components + '*.js'], ['eslint']);
-    return null;
-
-};
-
 var taskImportModulesToImages = function (cb) {
 
     var task = gulp.src([config.paths.images + '*.jpg', config.paths.images + '*.png', config.paths.images + '*.gif', config.paths.images + '*.ico', config.paths.images + '*.svg']);
@@ -461,28 +374,6 @@ var taskImportModulesToWatch = function () {
 
 };
 
-var taskImportModulesToHTMLLint = function () {
-
-    var task = gulp.src([config.paths.html + '*.html', config.paths.html + '/sub-templates/*.html']);
-    task = task.pipe(htmlLint({
-        htmllintrc: ".htmllintrc",
-        useHtmllintrc: true
-    }));
-
-    task = task.pipe(htmlLint.format());
-    task = task.pipe(htmlLint.failOnError());
-
-    return task;
-
-};
-
-var taskImportModulesToWatchHTMLLint = function () {
-
-    gulp.watch([config.paths.html + '*.html', config.paths.html + '/sub-templates/*.html'], ['htmllint']);
-    return null;
-
-};
-
 // Sass tools
 // --------------------------------------------------------------------------
 
@@ -513,20 +404,6 @@ gulp.task('sprite', ['img:optimization'], taskImportCssSprite);
 // --------------------------------------------------------------------------
 
 gulp.task('watch', taskImportModulesToWatch);
-
-// ESLINT code validation
-// --------------------------------------------------------------------------
-gulp.task('eslint', taskImportModulesToESLint);
-gulp.task('watch-eslint', taskImportModulesToWatchEslint);
-gulp.task('csslint', taskImportModulesToCSSLint);
-gulp.task('watch-csslint', taskImportModulesToWatchCSSLint);
-gulp.task('scsslint', taskImportModulesToSCSSLint);
-gulp.task('watch-scsslint', taskImportModulesToWatchSCSSLint);
-gulp.task('htmllint', taskImportModulesToHTMLLint);
-gulp.task('watch-htmllint', taskImportModulesToWatchHTMLLint);
-gulp.task('fonts', taskImportModulesToFonts);
-
-gulp.task('testcode', ['eslint', 'csslint', 'scsslint', 'htmllint']);
 
 // Default Task
 // --------------------------------------------------------------------------
