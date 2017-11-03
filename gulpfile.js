@@ -396,9 +396,9 @@ gulp.task('js', ['js:concat', 'js:vendor', 'js:components']); // ['js:hint', 'js
 // Images tools
 // --------------------------------------------------------------------------
 
-gulp.task('img:sprite', taskImportSprite);
-gulp.task('img:optimization', ['img:sprite'], taskImportModulesToImages);
-gulp.task('sprite', ['img:optimization'], taskImportCssSprite);
+gulp.task('sprite', taskImportSprite);
+gulp.task('img:optimization', ['sprite'], taskImportModulesToImages);
+gulp.task('img', ['img:optimization'], taskImportCssSprite);
 
 // Watch
 // --------------------------------------------------------------------------
