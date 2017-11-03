@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
 
 <head>
     {% for tag in page.metatags %}
         {{tag}}
     {% endfor %}    
-
+    
     {% include head.html %}
 </head>
 
