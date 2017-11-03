@@ -1,6 +1,6 @@
 Vue.component('chart-vue', {
     template: '<canvas></canvas>',
-    props: ['labels', 'values', 'color', 'type', 'title'],
+    props: ['labels', 'values', 'color', 'type', 'title', 'beforeTooltips', 'beginAtZero'],
     props: {
         labels: {},
         values: {},
@@ -10,6 +10,12 @@ Vue.component('chart-vue', {
         },
         type: {
             default: 'line'
+        },
+        beforeTooltips: {
+            default: 'Probability of getting'
+        },
+        beginAtZero: {
+            default: true
         }
     },
     data() {
@@ -57,14 +63,24 @@ Vue.component('chart-vue', {
                             return tooltipItem.yLabel;
                         },
                         title: (tooltipItem, data) => {
-                            return `Probability of getting ${tooltipItem[0].xLabel}`;
+                            return `${this.beforeTooltips} ${tooltipItem[0].xLabel}`;
                         }
                     }
                 },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: this.beginAtZero
+                        }
+                    }]
+                }
             }
 
             this.chart = new Chart(this.$el.getContext('2d'), { type: this.type, data: data, options });
         }
+    },
+    mounted(){
+        this.render();
     }
 
 })
