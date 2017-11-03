@@ -1,0 +1,5 @@
+# markdown: redcarpet
+baseurl: /DataFront
+exclude: ['.gitignore']
+permalink: date
+permalink: /:title

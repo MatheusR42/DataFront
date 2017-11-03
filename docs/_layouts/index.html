@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% for tag in page.metatags %}
+        {{tag}}
+    {% endfor %}    
+
+    {% include head.html %}
+</head>
+
+<body>
+    <div id="app">
+        <section class="hero is-primary is-fullheight is-bold">
+            {% include header.html %}
+            {{ content }}
+        </section>
+    </div>
+    {% include scripts.footer.html %}
+</body>
+
+</html>
