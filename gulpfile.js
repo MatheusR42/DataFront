@@ -378,7 +378,7 @@ var taskImportModulesToWatch = function () {
 // --------------------------------------------------------------------------
 
 gulp.task('sass:import-modules', taskImportModules);
-gulp.task('sass:css', taskImportModulesToSCSS);
+gulp.task('sass:css', ['sass:import-modules'], taskImportModulesToSCSS);
 gulp.task('sass:styles', taskImportModulesToCSS);
 gulp.task('sass:vendor', taskImportModulesToCSSVendor);
 
