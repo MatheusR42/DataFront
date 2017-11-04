@@ -5,38 +5,45 @@ Vue.component('expected-value',{
                 <div class="column has-text-centered" >
                     <h2 class="title is-size-5 has-text-weight-bold">Events probabilities</h2>
                     
-                    <div class="field is-horizontal" v-for="(event, index) in events">
-                        <div class="field-label is-normal">
-                            <label class="label">Event {{index + 1}}</label>
-                        </div>
+                    <div class="field" v-for="(event, index) in events">
                         <div class="field-body">
-                            <div class="field">
-                                <input class="input" type="text" placeholder="Value" v-model="event.value">
-                            </div>
-                            <div class="field">
-                                <input class="input" type="text" placeholder="Probability" v-model="event.probability">
-                            </div>
-                            <div class="field">
-                                <button class="button" @click="remove(index)">
-                                    <span class="icon is-small has-text-grey-dark">
-                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                    </span>
-                                </button>
+                            <div class="field is-grouped">
+                                <p class="control is-expanded">
+                                    <label class="label">P({{index + 1}})</label>
+                                </p>
+
+                                <p class="control is-expanded">
+                                    <input class="input" type="text" placeholder="Value" v-model="event.value">
+                                </p>
+
+                                <p class="control is-expanded">
+                                    <input class="input" type="text" placeholder="Probability" v-model="event.probability">
+                                </p>
+
+                                <p class="control is-expanded">
+                                    <button class="button" @click="remove(index)">
+                                        <span class="icon is-small has-text-grey-dark">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </span>
+                                    </button>
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="field is-horizontal">
-                        <div class="field-label is-normal">
-                            <label class="label">Add more</label>
+                    <div class="field is-grouped is-grouped-right">
+                        <div class="field-label is-normal control">
+                            <label class="label control has-text-right">
+                                Add more
+                            </label>
                         </div>
-                        <div class="control level-right">
+                        <p class="control">
                             <button class="button" @click="add">
                                 <span class="icon is-small has-text-info">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                 </span>
                             </button>
-                        </div>
+                        </p>
                     </div>
                 </div>
 
