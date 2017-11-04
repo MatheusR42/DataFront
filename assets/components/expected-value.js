@@ -13,11 +13,11 @@ Vue.component('expected-value',{
                                 </p>
 
                                 <p class="control is-expanded">
-                                    <input class="input" type="text" placeholder="Value" v-model="event.value">
+                                    <input class="input" type="text" placeholder="Value" v-model.number="event.value">
                                 </p>
 
                                 <p class="control is-expanded">
-                                    <input class="input" type="text" placeholder="Probability" v-model="event.probability">
+                                    <input class="input" type="text" placeholder="Probability" v-model.number="event.probability">
                                 </p>
 
                                 <p class="control is-expanded">
@@ -44,6 +44,12 @@ Vue.component('expected-value',{
                                 </span>
                             </button>
                         </p>
+                    </div>
+                    <div class="field">
+                        Expected value: {{expectedValue}}
+                    </div>
+                    <div class="field has-text-danger" v-if="errorProbability">
+                        The sum of probabilities must be equal to 1
                     </div>
                 </div>
 
@@ -79,22 +85,32 @@ Vue.component('expected-value',{
     },
     computed: {
         labels: function () {
-            let labels = [];
-
-            this.events.forEach(function(event) {
-                labels.push(event.value);
+            
+            return this.events.map(event => {
+                return event.value;
             });
 
-            return labels;
         },
         values: function () {
-            let values = [];
 
-            this.events.forEach(function(event) {
-                values.push(event.probability);
+            return this.events.map(event => {
+                return event.probability;
             });
 
-            return values;
+        },
+        expectedValue: function(){
+            
+            return this.events.reduce((a, b) => {
+                return a + b.value * b.probability;
+            }, 0);
+
+        },
+        errorProbability: function(){
+
+            return this.events.reduce((a, b) => {
+                return a + b.probability;
+            }, 0) != 1;
+
         }
     },
     methods: {
@@ -108,10 +124,10 @@ Vue.component('expected-value',{
                 let inputs = document.querySelectorAll('input[placeholder="Value"]');
                 let lastInput = inputs[inputs.length - 1];
                 lastInput.focus();
-            })
+            });
         },
         remove(index){
-            this.events.pop(index);
+            this.events.splice(index, 1);
         }
     }
 })
