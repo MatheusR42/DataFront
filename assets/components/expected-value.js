@@ -9,7 +9,7 @@ Vue.component('expected-value',{
                         <div class="field-body">
                             <div class="field is-grouped">
                                 <p class="control is-expanded">
-                                    <label class="label">P({{index + 1}})</label>
+                                    <label class="label">Event({{index + 1}})</label>
                                 </p>
 
                                 <p class="control is-expanded">
