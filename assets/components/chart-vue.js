@@ -1,6 +1,5 @@
 Vue.component('chart-vue', {
     template: '<canvas></canvas>',
-    props: ['labels', 'values', 'color', 'type', 'title', 'beforeTooltips', 'beginAtZero'],
     props: {
         labels: {},
         values: {},
@@ -76,7 +75,11 @@ Vue.component('chart-vue', {
                 }
             }
 
-            this.chart = new Chart(this.$el.getContext('2d'), { type: this.type, data: data, options });
+            this.chart = new Chart(this.$el.getContext('2d'), {
+                type: this.type,
+                data: data,
+                options
+            });
         }
     },
     mounted(){
