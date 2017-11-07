@@ -55,7 +55,7 @@ Vue.component('expected-value',{
 
                 <div class="column">
                     <div class="content">
-                        <chart-vue :labels="labels" :values="values" title="Probability Mass Function" type="bar"></chart-vue>
+                        <chart-vue :labels="labels" :values="values" :line="[expectedValue]" title="Probability Mass Function" type="bar"></chart-vue>
                     </div>
                 </div>
             </div>

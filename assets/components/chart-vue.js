@@ -4,6 +4,7 @@ Vue.component('chart-vue', {
         labels: {},
         values: {},
         title: {},
+        line: {},
         color: {
             default: 'rgba(220, 220, 220, .2)'
         },
@@ -24,6 +25,12 @@ Vue.component('chart-vue', {
     },
     watch: {
         values: function () {
+            if (this.chart) {
+                this.chart.destroy();
+            }
+            this.render();
+        },
+        line: function () {
             if (this.chart) {
                 this.chart.destroy();
             }
@@ -78,11 +85,47 @@ Vue.component('chart-vue', {
             this.chart = new Chart(this.$el.getContext('2d'), {
                 type: this.type,
                 data: data,
-                options
+                options,
+                lineAtIndex: this.line
             });
         }
     },
     mounted(){
+        const verticalLinePlugin = {
+            /*
+            plugin adapted from https://stackoverflow.com/a/43092029
+            */
+            renderVerticalLine: function (chartInstance, pointIndex) {
+                // const lineLeftOffset = this.getLinePosition(chartInstance, pointIndex);
+                const context = chartInstance.chart.ctx;
+                
+                let yScale = chartInstance.scales['y-axis-0'];
+                let xScale = chartInstance.scales['x-axis-0'];
+                let lineLeftOffset = xScale.getPixelForValue(undefined, pointIndex - 1);
+
+                // render vertical line
+                context.beginPath();
+                context.strokeStyle = '#ff0000';
+                context.moveTo(lineLeftOffset, yScale.top);
+                context.lineTo(lineLeftOffset, yScale.bottom);
+                context.stroke();
+          
+                // write label
+                context.fillStyle = "#ff0000";
+                context.textAlign = 'center';
+                context.font="12px Georgia";
+                context.fillText('Expected value', lineLeftOffset, yScale.top);
+            },
+          
+            afterDatasetsDraw: function (chart, easing) {
+                if (chart.config.lineAtIndex) {
+                    chart.config.lineAtIndex.forEach(pointIndex => this.renderVerticalLine(chart, pointIndex));
+                }
+            }
+        };
+        
+        Chart.plugins.register(verticalLinePlugin);
+        
         this.render();
     }
 
